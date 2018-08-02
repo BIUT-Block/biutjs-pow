@@ -1,0 +1,16 @@
+[{
+    "Height": 0,
+    "TimeStamp": 1530297308,
+    "Transactions": [],
+    "Parent_Hash": "Genesis",
+    "Mined_By": "SEC",
+    "Difficulty": 1,
+    "Total_Difficulty": 1,
+    "Gas_Used": 0,
+    "Gas_Limit": 0,
+    "Block_Reward": 10,
+    "Extra_Data": "SEC Hello World",
+    "Size": 334,
+    "Nonce": "",
+    "Hash": "5f213ac06cfe4a82e167aa3ea430e520be99dcedb4ab47fd8f668448708e34c1"
+}]

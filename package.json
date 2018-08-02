@@ -1,0 +1,34 @@
+{
+  "name": "@sec-block/secjs-pow",
+  "version": "1.0.0",
+  "description": "sec blockchain pow lib",
+  "main": "src/index.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SEC-Block/secjs-pow"
+  },
+  "keywords": [
+    "sec",
+    "blockchain",
+    "pow"
+  ],
+  "author": "Weihan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SEC-Block/secjs-pow/issues"
+  },
+  "homepage": "https://github.com/SEC-Block/secjs-pow#README",
+  "dependencies": {
+    "@sec-block/secjs-util": "^1.1.12",
+    "chai": "^4.1.2",
+    "level": "^4.0.0",
+    "miller-rabin": "^4.0.1"
+  }
+}
