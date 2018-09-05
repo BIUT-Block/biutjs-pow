@@ -1,13 +1,12 @@
 const expect = require('chai').expect
 const path = require('path')
-const level = require('level')
 const SECPow = require('../src/index')
 
 describe('SECPow lib test', () => {
   it('Mining and nonce verification test', (done) => {
-    const cacheDB = level(path.join(__dirname, '../db/cacheDB/'))
+    const cacheDBPath = path.join(__dirname, '../db/cacheDB/')
     const config = {
-      cacheDB: cacheDB
+      cacheDBPath: cacheDBPath
     }
     let secPow = new SECPow(config)
 

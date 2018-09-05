@@ -2,6 +2,7 @@ const SecUtils = require('@sec-block/secjs-util')
 const randomGen = require('../src/secjs-random-generate')
 const secHashUtil = require('./util.js')
 const xor = require('buffer-xor')
+const level = require('level')
 
 const secUtil = new SecUtils()
 
@@ -13,7 +14,12 @@ class SECPow {
     this.dbOpts = {
       valueEncoding: 'json'
     }
-    this.cacheDB = config.cacheDB
+
+    if ('cacheDBPath' in config) {
+      this.cacheDB = level(config.cacheDBPath)
+    } else {
+      throw new Error('SECPow constructor invalid input')
+    }
     this.cache = false
   }
 
@@ -167,7 +173,7 @@ class SECPow {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  verifyPOW (block, callback) {
+  async verifyPOW (block, callback) {
     if (block.Height === 0) {
       callback(true)
       return
@@ -232,7 +238,7 @@ class SECPow {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  mineLight (block, difficulty, callback) {
+  async mineLight (block, difficulty, callback) {
     let self = this
     this._loadEpoc(block.Height, function () {
       let target = self._targetCalc(difficulty)
