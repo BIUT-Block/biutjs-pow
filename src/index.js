@@ -245,7 +245,7 @@ class SECPow {
     let stopFlag = false
 
     this.event.on('stop_mining', function () {
-      console.log('this is in stop event')
+      // console.log('this is in stop event')
       stopFlag = true
     })
 
