@@ -12,6 +12,7 @@ This library is for sec blockchain pow mining and verification
     * [new SECPow(config)](#new_SECPow_new)
     * [.verifyPOW(block, callback)](#SECPow+verifyPOW) => <code>None</code>
     * [.mineLight(block, difficulty, callback)](#SECPow+mineLight) => <code>None</code>
+    * [.stopMining()](#SECPow+stopMining) => <code>None</code>
 
 <a name="new_SECPow_new"></a>
 
@@ -45,3 +46,8 @@ Light client mining function
 | block | <code>Object</code> | single block data |
 | difficulty | <code>Integer</code> | difficulty value |
 | callback | <code>function</code> | callback function |
+
+<a name="SECPow+stopMining"></a>
+
+### secPow.stopMining() => <code>None</code>
+Stop the mining operation

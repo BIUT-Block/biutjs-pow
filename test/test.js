@@ -17,21 +17,23 @@ describe('SECPow lib test', () => {
     }
 
     secPow.mineLight(block, difficulty, function (nonce, result) {
-      console.log(result.mix)
-      console.log(result.hash)
+      if (nonce !== null) {
+        console.log(result.mix)
+        console.log(result.hash)
 
-      block = {
-        Height: 1,
-        Difficulty: difficulty,
-        Header: Buffer.from('1234'),
-        MixHash: result.mix,
-        Nonce: nonce
+        block = {
+          Height: 1,
+          Difficulty: difficulty,
+          Header: Buffer.from('1234'),
+          MixHash: result.mix,
+          Nonce: nonce
+        }
+
+        secPow.verifyPOW(block, function (result) {
+          expect(result).to.be.true
+          done()
+        })
       }
-
-      secPow.verifyPOW(block, function (result) {
-        expect(result).to.be.true
-        done()
-      })
     })
   }).timeout('20s')
 })

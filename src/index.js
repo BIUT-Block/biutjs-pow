@@ -3,6 +3,7 @@ const randomGen = require('../src/secjs-random-generate')
 const secHashUtil = require('./util.js')
 const xor = require('buffer-xor')
 const level = require('level')
+const events = require('events')
 
 const secUtil = new SecUtils()
 
@@ -21,6 +22,7 @@ class SECPow {
       throw new Error('SECPow constructor invalid input')
     }
     this.cache = false
+    this.event = new events.EventEmitter()
   }
 
   /**
@@ -240,11 +242,21 @@ class SECPow {
    */
   async mineLight (block, difficulty, callback) {
     let self = this
+    let stopFlag = false
+
+    this.event.on('stop_mining', function () {
+      console.log('this is in stop event')
+      stopFlag = true
+    })
+
     this._loadEpoc(block.Height, function () {
       let target = self._targetCalc(difficulty)
       let nonce = randomGen.randomGenerate('hex', 16)
 
       while (self._bufferCompare(self._run(block.Header, Buffer.from(nonce, 'hex')).hash, target)) {
+        if (stopFlag) {
+          return callback(null, null)
+        }
         nonce = randomGen.randomGenerate('hex', 16)
       }
       callback(nonce, self._run(block.Header, Buffer.from(nonce, 'hex')))
@@ -263,6 +275,11 @@ class SECPow {
     }
 
     return buffer
+  }
+
+  // Stop the mining function
+  stopMining () {
+    this.event.emit('stop_mining')
   }
 }
 
