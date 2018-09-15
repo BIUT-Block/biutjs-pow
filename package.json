@@ -8,7 +8,7 @@
     "test": "test"
   },
   "dependencies": {
-    "@sec-block/secjs-util": "^1.1.12",
+    "@sec-block/secjs-util": "^1.1.15",
     "chai": "^4.1.2",
     "level": "^4.0.0",
     "miller-rabin": "^4.0.1"
