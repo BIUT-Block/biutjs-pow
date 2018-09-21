@@ -115,7 +115,6 @@ class SECPow {
    * @return {None}
    */
   _loadEpoc (number, callback) {
-    let self = this
     const epoc = secHashUtil.getEpoc(number)
 
     if (this.epoc === epoc) {
@@ -124,43 +123,28 @@ class SECPow {
 
     this.epoc = epoc
 
-    // gives the seed the first epoc found
-    function findLastSeed (epoc, callback2) {
-      if (epoc === 0) {
-        return callback2(secUtil.zeros(32), 0)
-      }
-
-      self.cacheDB.get(epoc, self.dbOpts, function (err, data) {
-        if (!err) {
-          callback2(data.seed, epoc)
-        } else {
-          findLastSeed(epoc - 1, callback2)
-        }
-      })
-    }
-
     /* eslint-disable handle-callback-err */
-    self.cacheDB.get(epoc, self.dbOpts, function (err, data) {
+    this.cacheDB.get(epoc, this.dbOpts, (err, data) => {
       if (!data) {
-        self.cacheSize = secHashUtil.getCacheSize(epoc)
-        self.fullSize = secHashUtil.getFullSize(epoc)
+        this.cacheSize = secHashUtil.getCacheSize(epoc)
+        this.fullSize = secHashUtil.getFullSize(epoc)
 
-        findLastSeed(epoc, function (seed, foundEpoc) {
-          self.seed = secHashUtil.getSeed(seed, foundEpoc, epoc)
-          let cache = self._mkcache(self.cacheSize, self.seed)
+        this._findLastSeed(epoc, (seed, foundEpoc) => {
+          this.seed = secHashUtil.getSeed(seed, foundEpoc, epoc)
+          let cache = this._mkcache(this.cacheSize, this.seed)
           // store the generated cache
-          self.cacheDB.put(epoc, {
-            cacheSize: self.cacheSize,
-            fullSize: self.fullSize,
-            seed: self.seed,
+          this.cacheDB.put(epoc, {
+            cacheSize: this.cacheSize,
+            fullSize: this.fullSize,
+            seed: this.seed,
             cache: cache
-          }, self.dbOpts, callback())
+          }, this.dbOpts, callback())
         })
       } else {
-        self.cacheSize = data.cacheSize
-        self.fullSize = data.fullSize
-        self.seed = Buffer.from(data.seed)
-        self.cache = data.cache.map(function (a) {
+        this.cacheSize = data.cacheSize
+        this.fullSize = data.fullSize
+        this.seed = Buffer.from(data.seed)
+        this.cache = data.cache.map(a => {
           return Buffer.from(a)
         })
         callback()
@@ -169,29 +153,42 @@ class SECPow {
     /* eslint-enable handle-callback-err */
   }
 
+
+  // gives the seed the first epoc found
+  _findLastSeed (epoc, callback) {
+    if (epoc === 0) {
+      return callback(secUtil.zeros(32), 0)
+    }
+
+    this.cacheDB.get(epoc, this.dbOpts, (err, data) => {
+      if (!err) {
+        callback(data.seed, epoc)
+      } else {
+        this._findLastSeed(epoc - 1, callback)
+      }
+    })
+  }
+
   /**
    * Verify correctness of pow result
    * @param  {Object} block - single block data
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  async verifyPOW (block, callback) {
+  verifyPOW (block, callback) {
     if (block.Height === 0) {
       callback(true)
       return
     }
-
-    let self = this
-
-    this._loadEpoc(block.Height, function () {
-      let result = self._run(block.Header, Buffer.from(block.Nonce, 'hex'))
+    this._loadEpoc(block.Height, () => {
+      let result = this._run(block.Header, Buffer.from(block.Nonce, 'hex'))
       let mixCheck = false
       if (Buffer.compare(result.mix, block.MixHash) === 0) {
         mixCheck = true
       }
 
-      let target = self._targetCalc(block.Difficulty)
-      let hashCheck = self._bufferCompare(target, result.hash)
+      let target = this._targetCalc(block.Difficulty)
+      let hashCheck = this._bufferCompare(target, result.hash)
 
       callback(mixCheck && hashCheck)
     })
@@ -213,7 +210,6 @@ class SECPow {
         buf1 = Buffer.concat([Buffer.alloc(1), buf1])
       }
     }
-
     if (buf1 >= buf2) {
       return true
     }
@@ -229,7 +225,6 @@ class SECPow {
     const pow256 = '010000000000000000000000000000000000000000000000000000000000000000'
     let target = Math.floor(parseInt(pow256, 16) / difficulty).toString(16)
     target = Buffer.from(('0'.repeat(target.length % 2) + target), 'hex')
-
     return target
   }
 
@@ -240,26 +235,17 @@ class SECPow {
    * @param  {Function} callback - callback function
    * @return {None}
    */
-  async mineLight (block, difficulty, callback) {
-    let self = this
-    let stopFlag = false
-
-    this.event.on('stop_mining', function () {
-      // console.log('this is in stop event')
-      stopFlag = true
-    })
-
-    this._loadEpoc(block.Height, function () {
-      let target = self._targetCalc(difficulty)
+  mineLight (block, difficulty, callback) {
+    this.stopFlag = false
+    this._loadEpoc(block.Height, () => {
+      let target = this._targetCalc(difficulty)
       let nonce = randomGen.randomGenerate('hex', 16)
-
-      while (self._bufferCompare(self._run(block.Header, Buffer.from(nonce, 'hex')).hash, target)) {
-        if (stopFlag) {
-          return callback(null, null)
+      setTimeout(()=>{
+        while (!this.stopFlag && this._bufferCompare(this._run(block.Header, Buffer.from(nonce, 'hex')).hash, target)) {
+          nonce = randomGen.randomGenerate('hex', 16)
         }
-        nonce = randomGen.randomGenerate('hex', 16)
-      }
-      callback(nonce, self._run(block.Header, Buffer.from(nonce, 'hex')))
+        callback(nonce, this._run(block.Header, Buffer.from(nonce, 'hex')))
+      }, 0)
     })
   }
 
@@ -269,7 +255,6 @@ class SECPow {
    */
   _calcDataset () {
     let buffer = []
-
     for (let i = 0; i < Math.floor(this.fullSize / secHashUtil.params.HASH_BYTES); i++) {
       buffer.push(this._calcDatasetItem(i))
     }
@@ -279,7 +264,7 @@ class SECPow {
 
   // Stop the mining function
   stopMining () {
-    this.event.emit('stop_mining')
+    this.stopFlag = true
   }
 }
 

@@ -1,11 +1,9 @@
 const SECPow = require('../src/index.js')
-const level = require('level')
-const path = require('path')
 
-const cacheDB = level(path.join(__dirname, '../db/cacheDB/'))
-// const datasetDB = level(path.join(__dirname, '../db/datasetDB/'))
+const cacheDBPath = process.cwd() + '/db/cacheDB/'
+
 const config = {
-  cacheDB: cacheDB
+  cacheDBPath: cacheDBPath
   // datasetDB: datasetDB
 }
 
