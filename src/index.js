@@ -176,11 +176,11 @@ class SECPow {
    * @return {None}
    */
   verifyPOW (block, callback) {
-    if (block.Height === 0) {
+    if (block.Number === 0) {
       callback(true)
       return
     }
-    this._loadEpoc(block.Height, () => {
+    this._loadEpoc(block.Number, () => {
       let result = this._run(block.Header, Buffer.from(block.Nonce, 'hex'))
       let mixCheck = false
       if (Buffer.compare(result.mix, block.MixHash) === 0) {
@@ -237,7 +237,7 @@ class SECPow {
    */
   mineLight (block, difficulty, callback) {
     this.stopFlag = false
-    this._loadEpoc(block.Height, () => {
+    this._loadEpoc(block.Number, () => {
       let target = this._targetCalc(difficulty)
       let nonce = randomGen.randomGenerate('hex', 16)
       setTimeout(()=>{
