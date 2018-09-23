@@ -3,7 +3,6 @@ const randomGen = require('../src/secjs-random-generate')
 const secHashUtil = require('./util.js')
 const xor = require('buffer-xor')
 const level = require('level')
-const events = require('events')
 
 const secUtil = new SecUtils()
 
@@ -22,7 +21,6 @@ class SECPow {
       throw new Error('SECPow constructor invalid input')
     }
     this.cache = false
-    this.event = new events.EventEmitter()
   }
 
   /**

@@ -12,7 +12,7 @@ describe('SECPow lib test', () => {
 
     const difficulty = 256
     let block = {
-      Height: 1,
+      Number: 1,
       Header: Buffer.from('1234')
     }
 
@@ -22,7 +22,7 @@ describe('SECPow lib test', () => {
         console.log(result.hash)
 
         block = {
-          Height: 1,
+          Number: 1,
           Difficulty: difficulty,
           Header: Buffer.from('1234'),
           MixHash: result.mix,

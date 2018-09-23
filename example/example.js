@@ -13,7 +13,7 @@ let secPow = new SECPow(config)
 
 const difficulty = 256
 let block = {
-  Height: 1,
+  Number: 1,
   Header: Buffer.from('1234')
 }
 
@@ -22,7 +22,7 @@ secPow.mineLight(block, difficulty, function (nonce, result) {
   console.log(result.hash)
 
   block = {
-    Height: 1,
+    Number: 1,
     Difficulty: difficulty,
     Header: Buffer.from('1234'),
     MixHash: result.mix,
