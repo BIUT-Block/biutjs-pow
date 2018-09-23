@@ -260,6 +260,31 @@ class SECPow {
     return buffer
   }
 
+  /**
+   * Calculate POW difficulty for next block
+   * @param  {Number} parentDiff - parent block difficulty value
+   * @param  {Integer} parentBlockNumber - parent block number
+   * @param  {Integer} parentTimeStamp - parent block generated timestamp
+   * @param  {Integer} currentTimestamp - current generated timestamp
+   * @return {Number}
+   */
+  calcDifficulty (parentDiff, parentBlockNumber, parentTimeStamp, currentTimestamp) {
+    let direction = 0
+    if (currentTimestamp - parentTimeStamp < secHashUtil.paramsDiff.EXPECTED_TIMESTAMP_DIFFERENCE) {
+      direction = -1
+    } else {
+      direction = 1
+    }
+    let adjustDiff = Math.round(Math.pow(2, (Math.floor(parentBlockNumber / 100000) - 2)))
+    let newDiff = parentDiff + Math.floor(parentDiff, 2048) * direction + adjustDiff
+
+    if (newDiff >= secHashUtil.params.MIN_DIFFICULTY) {
+      return newDiff
+    } else {
+      return parentDiff
+    }
+  }
+
   // Stop the mining function
   stopMining () {
     this.stopFlag = true

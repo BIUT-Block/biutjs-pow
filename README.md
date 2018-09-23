@@ -12,6 +12,7 @@ This library is for sec blockchain pow mining and verification
     * [new SECPow(config)](#new_SECPow_new)
     * [.verifyPOW(block, callback)](#SECPow+verifyPOW) => <code>None</code>
     * [.mineLight(block, difficulty, callback)](#SECPow+mineLight) => <code>None</code>
+    * [.calcDifficulty(parentDiff, parentBlockNumber, parentTimeStamp, currentTimestamp)](#SECPow+calcDifficulty) => <code>Number</code>
     * [.stopMining()](#SECPow+stopMining) => <code>None</code>
 
 <a name="new_SECPow_new"></a>
@@ -46,6 +47,20 @@ Light client mining function
 | block | <code>Object</code> | single block data |
 | difficulty | <code>Integer</code> | difficulty value |
 | callback | <code>function</code> | callback function |
+
+<a name="SECPow+calcDifficulty"></a>
+
+### secPow.calcDifficulty(parentDiff, parentBlockNumber, parentTimeStamp, currentTimestamp) => <code>Number</code>
+Calculate POW difficulty for next block
+
+**Kind**: instance method of [<code>SECPow</code>](#SECPow)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| parentDiff | <code>Number</code> | parent block difficulty value |
+| parentBlockNumber | <code>Integer</code> | parent block number |
+| parentTimeStamp | <code>Integer</code> | parent block generated timestamp |
+| currentTimestamp | <code>Integer</code> | current generated timestamp |
 
 <a name="SECPow+stopMining"></a>
 
