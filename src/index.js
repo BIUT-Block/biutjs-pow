@@ -278,7 +278,7 @@ class SECPow {
     let adjustDiff = Math.round(Math.pow(2, (Math.floor(parentBlockNumber / 100000) - 2)))
     let newDiff = parentDiff + Math.floor(parentDiff, 2048) * direction + adjustDiff
 
-    if (newDiff >= secHashUtil.params.MIN_DIFFICULTY) {
+    if (newDiff >= secHashUtil.paramsDiff.MIN_DIFFICULTY) {
       return newDiff
     } else {
       return parentDiff
