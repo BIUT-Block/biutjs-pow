@@ -21,7 +21,7 @@ exports.params = {
 }
 
 exports.paramsDiff = {
-  EXPECTED_TIMESTAMP_DIFFERENCE: 10000,
+  EXPECTED_TIMESTAMP_DIFFERENCE: 100000,
   MIN_DIFFICULTY: 1
 }
 
