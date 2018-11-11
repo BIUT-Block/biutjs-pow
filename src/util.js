@@ -17,11 +17,10 @@ exports.params = {
   CACHE_ROUNDS: 3, // number of rounds in cache production
   ACCESSES: 64,
   WORD_BYTES: 4
-  
 }
 
 exports.paramsDiff = {
-  EXPECTED_TIMESTAMP_DIFFERENCE: 100000,
+  // EXPECTED_TIMESTAMP_DIFFERENCE: 100000,
   MIN_DIFFICULTY: 1
 }
 

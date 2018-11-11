@@ -8,10 +8,11 @@
     "test": "test"
   },
   "dependencies": {
-    "@sec-block/secjs-util": "^1.1.15",
-    "chai": "^4.1.2",
+    "@sec-block/secjs-util": "^1.1.16",
+    "chai": "^4.2.0",
     "level": "^4.0.0",
-    "miller-rabin": "^4.0.1"
+    "miller-rabin": "^4.0.1",
+    "mocha": "^5.2.0"
   },
   "devDependencies": {},
   "scripts": {

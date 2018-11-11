@@ -20,6 +20,13 @@ class SECPow {
     } else {
       throw new Error('SECPow constructor invalid input')
     }
+
+    if (typeof config.expectedDifficulty === 'number') {
+      this.expectedDifficulty = config.expectedDifficulty
+    } else {
+      throw new Error('SECPow constructor invalid input')
+    }
+
     this.cache = false
   }
 
@@ -151,7 +158,6 @@ class SECPow {
     /* eslint-enable handle-callback-err */
   }
 
-
   // gives the seed the first epoc found
   _findLastSeed (epoc, callback) {
     if (epoc === 0) {
@@ -238,7 +244,7 @@ class SECPow {
     this._loadEpoc(block.Number, () => {
       let target = this._targetCalc(difficulty)
       let nonce = randomGen.randomGenerate('hex', 16)
-      setTimeout(()=>{
+      setTimeout(() => {
         while (!this.stopFlag && this._bufferCompare(this._run(block.Header, Buffer.from(nonce, 'hex')).hash, target)) {
           nonce = randomGen.randomGenerate('hex', 16)
         }
@@ -270,7 +276,7 @@ class SECPow {
    */
   calcDifficulty (parentDiff, parentBlockNumber, parentTimeStamp, currentTimestamp) {
     let direction = 0
-    if (currentTimestamp - parentTimeStamp < secHashUtil.paramsDiff.EXPECTED_TIMESTAMP_DIFFERENCE) {
+    if (currentTimestamp - parentTimeStamp < this.expectedDifficulty) {
       direction = -1
     } else {
       direction = 1
