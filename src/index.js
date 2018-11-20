@@ -270,19 +270,21 @@ class SECPow {
    * Calculate POW difficulty for next block
    * @param  {Number} parentDiff - parent block difficulty value
    * @param  {Integer} parentBlockNumber - parent block number
-   * @param  {Integer} parentTimeStamp - parent block generated timestamp
-   * @param  {Integer} currentTimestamp - current generated timestamp
+   * @param  {Integer} parentPOWCalcTime - parent block POW calculation time consumed
    * @return {Number}
    */
-  calcDifficulty (parentDiff, parentBlockNumber, parentTimeStamp, currentTimestamp) {
+  calcDifficulty (parentDiff, parentBlockNumber, parentPOWCalcTime) {
     let direction = 0
-    if (currentTimestamp - parentTimeStamp < this.expectedDifficulty) {
+    if (parentPOWCalcTime < 0.8 * this.expectedDifficulty) {
+      direction = 1
+    } else if (parentPOWCalcTime > 1.2 * this.expectedDifficulty) {
       direction = -1
     } else {
-      direction = 1
+      direction = 0
     }
+
     let adjustDiff = Math.round(Math.pow(2, (Math.floor(parentBlockNumber / 100000) - 2)))
-    let newDiff = parentDiff + Math.floor(parentDiff, 2048) * direction + adjustDiff
+    let newDiff = parentDiff + Math.floor(parentDiff / 2048) * direction + adjustDiff
 
     if (newDiff >= secHashUtil.paramsDiff.MIN_DIFFICULTY) {
       return newDiff
