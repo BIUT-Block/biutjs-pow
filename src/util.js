@@ -1,8 +1,7 @@
 const SecUtils = require('@sec-block/secjs-util')
 const MR = require('miller-rabin')
 
-const secUtil = new SecUtils()
-const BN = secUtil.BN
+const BN = SecUtils.BN
 
 exports.params = {
   DATASET_BYTES_INIT: 1073741824, // 2^30
@@ -57,7 +56,7 @@ exports.getEpoc = function (blockNumber) {
  */
 exports.getSeed = function (seed, begin, end) {
   for (var i = begin; i < end; i++) {
-    seed = secUtil.sha3(seed)
+    seed = SecUtils.sha3(seed)
   }
   return seed
 }
