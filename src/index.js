@@ -4,8 +4,6 @@ const secHashUtil = require('./util.js')
 const xor = require('buffer-xor')
 const level = require('level')
 
-const secUtil = new SecUtils()
-
 class SECPow {
   /**
    * @param  {Object} config - JSON format configurations for constructor
@@ -38,16 +36,16 @@ class SECPow {
    */
   _mkcache (cacheSize, seed) {
     const n = Math.floor(cacheSize / secHashUtil.params.HASH_BYTES)
-    let o = [secUtil.sha3(seed, 512)]
+    let o = [SecUtils.sha3(seed, 512)]
 
     for (let i = 1; i < n; i++) {
-      o.push(secUtil.sha3(o[o.length - 1], 512))
+      o.push(SecUtils.sha3(o[o.length - 1], 512))
     }
 
     for (let _ = 0; _ < secHashUtil.params.CACHE_ROUNDS; _++) {
       for (let i = 0; i < n; i++) {
         let v = o[i].readUInt32LE(0) % n
-        o[i] = secUtil.sha3(xor(o[(i - 1 + n) % n], o[v]), 512)
+        o[i] = SecUtils.sha3(xor(o[(i - 1 + n) % n], o[v]), 512)
       }
     }
 
@@ -65,12 +63,12 @@ class SECPow {
     const r = Math.floor(secHashUtil.params.HASH_BYTES / secHashUtil.params.WORD_BYTES)
     let mix = Buffer.from(this.cache[i % n])
     mix.writeInt32LE(mix.readUInt32LE(0) ^ i, 0)
-    mix = secUtil.sha3(mix, 512)
+    mix = SecUtils.sha3(mix, 512)
     for (let j = 0; j < secHashUtil.params.DATASET_PARENTS; j++) {
       let cacheIndex = secHashUtil.fnv(i ^ j, mix.readUInt32LE(j % r * 4))
       mix = secHashUtil.fnvBuffer(mix, this.cache[cacheIndex % n])
     }
-    return secUtil.sha3(mix, 512)
+    return SecUtils.sha3(mix, 512)
   }
 
   /**
@@ -84,7 +82,7 @@ class SECPow {
     fullSize = fullSize || this.fullSize
     const n = Math.floor(fullSize / secHashUtil.params.HASH_BYTES)
     const w = Math.floor(secHashUtil.params.MIX_BYTES / secHashUtil.params.WORD_BYTES)
-    const s = secUtil.sha3(Buffer.concat([val, secHashUtil.bufReverse(nonce)]), 512)
+    const s = SecUtils.sha3(Buffer.concat([val, secHashUtil.bufReverse(nonce)]), 512)
     const mixhashes = Math.floor(secHashUtil.params.MIX_BYTES / secHashUtil.params.HASH_BYTES)
     let mix = Buffer.concat(Array(mixhashes).fill(s))
 
@@ -109,7 +107,7 @@ class SECPow {
 
     return {
       mix: cmix,
-      hash: secUtil.sha3(Buffer.concat([s, cmix]))
+      hash: SecUtils.sha3(Buffer.concat([s, cmix]))
     }
   }
 
@@ -161,7 +159,7 @@ class SECPow {
   // gives the seed the first epoc found
   _findLastSeed (epoc, callback) {
     if (epoc === 0) {
-      return callback(secUtil.zeros(32), 0)
+      return callback(SecUtils.zeros(32), 0)
     }
 
     this.cacheDB.get(epoc, this.dbOpts, (err, data) => {
