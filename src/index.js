@@ -141,7 +141,11 @@ class SECPow {
             fullSize: this.fullSize,
             seed: this.seed,
             cache: cache
-          }, this.dbOpts, callback())
+          }, this.dbOpts).then(() => {
+            callback()
+          }).catch((err) => {
+            callback(err)
+          })
         })
       } else {
         this.cacheSize = data.cacheSize
