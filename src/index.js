@@ -141,11 +141,7 @@ class SECPow {
             fullSize: this.fullSize,
             seed: this.seed,
             cache: cache
-          }, this.dbOpts).then(() => {
-            callback()
-          }).catch((err) => {
-            callback(err)
-          })
+          }, this.dbOpts, callback())
         })
       } else {
         this.cacheSize = data.cacheSize
@@ -291,7 +287,7 @@ class SECPow {
     if (newDiff >= secHashUtil.paramsDiff.MIN_DIFFICULTY) {
       return newDiff
     } else {
-      return parentDiff
+      return secHashUtil.paramsDiff.MIN_DIFFICULTY
     }
   }
 

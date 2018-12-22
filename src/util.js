@@ -20,7 +20,7 @@ exports.params = {
 
 exports.paramsDiff = {
   // EXPECTED_TIMESTAMP_DIFFERENCE: 100000,
-  MIN_DIFFICULTY: 1
+  MIN_DIFFICULTY: 2048
 }
 
 exports.getCacheSize = function (epoc) {
