@@ -15,7 +15,7 @@ exports.randomGenerate = function (type, length) {
     return getRandomString(length)
   } else if (type === 'hex') {
     let resultStr = ''
-    for(let i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       let dec = Math.floor(Math.random() * Math.floor(16))
       resultStr += dec.toString(16)
     }
